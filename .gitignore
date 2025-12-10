@@ -1,0 +1,12 @@
+__pycache__/
+
+checkpoints/
+logs/
+
+data/
+CASIA1/
+CASIA2/
+
+debug.*
+
+*.pth
