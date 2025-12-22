@@ -1,25 +1,26 @@
-
 data_root: "./data"
 casia1_name: "CASIA1"
 casia2_name: "CASIA2"
 
+model_name: "mobilenetv2"
+
 img_size: 512
+
 batch_size: 8
 num_epochs: 100
 learning_rate: 1e-4
 weight_decay: 1e-5
 
-#loss weights
-alpha: 10.0 # pos pixel
-beta: 1.0  # neg pixel
+alpha: 10.0
+beta: 1.0
 lambda_seg: 1.0
 lambda_cls: 0.1
-#lr scheduler
-lr_milestones: [30, 60, 80]
-lr_gamma: 0.1 
 
-#misc
+lr_milestones: [30, 60, 80]
+lr_gamma: 0.1
+
 num_workers: 4
 seed: 42
-ckpt_dir: "checkpoints"
-log_dir: "logs"
+
+ckpt_dir: "checkpoints/best_model_mobilenetv2.pth"
+log_dir: "logs/mobilenetv2"

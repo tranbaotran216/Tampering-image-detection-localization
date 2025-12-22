@@ -5,7 +5,7 @@ import numpy as np
 import random
 import argparse
 from config.config import Config
-from models.mobilenet import MobileNetV2_SRM_DetLoc
+from models.resnet50 import ResNet50_SRM_FPN_DetLoc
 from eval_utils import evaluate
 from datasets.dataloaders import build_dataloaders, set_seed
 
@@ -13,18 +13,16 @@ def parse_args():
     parser = argparse.ArgumentParser(
         description="Testing on CASIA1 and CASIA2 datasets"
     )
-
-
     parser.add_argument(
         "--config",
         type=str,
-        default="./config/config_mobilenetv2.yaml",
+        default="./config/config_resnet50.yaml",
         help="path to config.yaml",
     )
     parser.add_argument(
         "--ckpt",
         type=str,
-        default="./checkpoints/best_model_mobilenetv2.pth",
+        default="./checkpoints/best_resnet50.pth",
         help="Path to the trained model checkpoint",
     )
     parser.add_argument(
@@ -70,7 +68,7 @@ def main():
             ])
 
     _, _, test_c1_loader, test_c2_loader = build_dataloaders(cfg)
-    model = MobileNetV2_SRM_DetLoc().to(device)
+    model = ResNet50_SRM_FPN_DetLoc().to(device)
     ckpt = torch.load(args.ckpt, map_location=device)
     if isinstance(ckpt, dict) and "model" in ckpt:
         model.load_state_dict(ckpt["model"])

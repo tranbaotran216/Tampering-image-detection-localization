@@ -1,4 +1,4 @@
-# models/mobilenetv2_srm_detloc.py
+# models/mobilenet.py
 import torch
 import torch.nn as nn
 import torch.nn.functional as F

@@ -14,11 +14,13 @@ def multi_task_loss(outputs, batch, alpha=10.0, beta=1.0, lambda_seg =1.0, lambd
     lambda_seg, lambda_clf: trọng số cho 2 task
     """
     mask_logits = outputs["mask_logits"] # Bx1x 512 x 512
-    det_logits = outputs["det_logits"] # B 
+    det_logits = outputs["det_logits"] # mobilenetv2: [b]; resnet50: [b, 1]
     device = mask_logits.device
 
     masks = batch["mask"].to(device).float()                    
     labels = batch["label"].to(device).float()
+    labels = labels.view(-1) 
+    det_logits = det_logits.view(-1)
 
     has_mask = batch["has_mask"].to(device)  #bool
     # detection loss (BCE), all imgs
