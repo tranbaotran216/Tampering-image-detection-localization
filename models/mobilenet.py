@@ -5,7 +5,6 @@ import torch.nn.functional as F
 import numpy as np
 
 
-# ----------------------- SRM FILTER ----------------------- #
 class SRMConv2d(nn.Module):
     """
     Lọc SRM: xám Bx1xHxW -> Bx3xHxW (3 kernel high-pass 5x5).
@@ -46,7 +45,6 @@ class SRMConv2d(nn.Module):
         return F.conv2d(x, self.weight, padding=2)
 
 
-# ----------------------- MOBILENETV2 BACKBONE ----------------------- #
 class InvertedResidual(nn.Module):
     def __init__(self, inp, oup, stride, expand_ratio):
         super().__init__()
@@ -85,10 +83,8 @@ class InvertedResidual(nn.Module):
 
 class MobileNetV2Backbone(nn.Module):
     """
-    Backbone MobileNetV2 cho 512x512.
-    Trả ra:
-      - shallow: H/4 x W/4 (128x128)  (sau stage 2, C=24)
-      - deep   : H/16 x W/16 (32x32)  (cuối cùng, C=320)
+    - shallow: H/4 x W/4 (128x128)  (sau stage 2, C=24)
+    - deep   : H/16 x W/16 (32x32)  (cuối cùng, C=320)
     """
     def __init__(self, in_channels=3):
         super().__init__()
@@ -147,7 +143,7 @@ class MobileNetV2Backbone(nn.Module):
         return shallow, deep
 
 
-# ----------------------- CBAM ----------------------- #
+#cbam
 class ChannelAttention(nn.Module):
     def __init__(self, in_channels, reduction=16):
         super().__init__()
@@ -193,13 +189,12 @@ class CBAMBlock(nn.Module):
         return x
 
 
-# ----------------------- DUAL-STREAM BACKBONE ----------------------- #
 class DualStreamBackbone(nn.Module):
     """
     2 stream:
       - RGB: MobileNetV2Backbone(3)
       - SRM: Gray -> SRMConv2d -> MobileNetV2Backbone(3)
-    Trả ra:
+      Out:
       - deep_fused: B x deep_out_ch x 32 x 32
       - shallow_fused: B x (2*shallow_out_ch) x 128 x 128
     """
@@ -267,8 +262,7 @@ class DualStreamBackbone(nn.Module):
 
         return deep, shallow
 
-
-# ----------------------- HEAD LOCALIZATION ----------------------- #
+#localizaition head 
 class UNetLiteHead(nn.Module):
     def __init__(self, in_channels_deep, in_channels_shallow,
                  mid_channels=128, seg_channels=64):
@@ -308,8 +302,7 @@ class UNetLiteHead(nn.Module):
         mask_prob = torch.sigmoid(mask_logits)
         return mask_prob, mask_logits
 
-
-# ----------------------- HEAD DETECTION ----------------------- #
+# detection head
 class DetectionHead(nn.Module):
     def __init__(self, in_channels_deep, hidden_dim=128, use_maxpool=True):
         super().__init__()
@@ -339,8 +332,6 @@ class DetectionHead(nn.Module):
         prob = torch.sigmoid(logits)
         return prob, logits
 
-
-# ----------------------- FULL MODEL ----------------------- #
 class MobileNetV2_SRM_DetLoc(nn.Module):
     def __init__(self,
                  deep_out_ch=128,
@@ -379,13 +370,3 @@ class MobileNetV2_SRM_DetLoc(nn.Module):
             "det_prob": det_prob,
             "det_logits": det_logits,
         }
-
-
-if __name__ == "__main__":
-    # test nhanh
-    device = "cuda" if torch.cuda.is_available() else "cpu"
-    model = MobileNetV2_SRM_DetLoc().to(device)
-    x = torch.randn(1, 3, 512, 512, device=device)
-    out = model(x)
-    print("mask_prob:", out["mask_prob"].shape)
-    print("det_prob:", out["det_prob"].shape)

@@ -194,9 +194,6 @@ class ResNet50_SRM_FPN_DetLoc(nn.Module):
         )
 
     def forward(self, x: torch.Tensor):
-        """
-        x: B x 3 x H x W (H, W có thể khác 512, model sẽ tự xử lý)
-        """
         input_size = x.shape[2:]  # (H, W)
 
         if self.use_srm and self.srm is not None:
