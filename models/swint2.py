@@ -5,7 +5,7 @@ import torch.nn.functional as F
 
 from torchvision.models import swin_v2_t, swin_v2_s, swin_v2_b
 from torchvision.models.feature_extraction import create_feature_extractor
-
+from typing import Optional
 import timm
 
 
@@ -77,7 +77,7 @@ class SwinV2Backbone(nn.Module):
         model_name: str = "swinv2_tiny_window8_256",
         pretrained: bool = True,
         out_indices=(0, 1, 2, 3),
-        img_size: int | None = None,
+        img_size:Optional[int] = None,
     ):
         super().__init__()
         self.model_name = model_name
@@ -271,7 +271,7 @@ class SwinT2_SRM_FPN_DetLoc(nn.Module):
         det_hidden_dim: int = 512,
         det_dropout: float = 0.30,
         det_use_p5: bool = True,
-        img_size: int | None = None,
+        img_size: Optional[int] = None,
         srm_out_channels = (64, 128, 256, 256),
         srm_gamma_init: float = 0.05,
         

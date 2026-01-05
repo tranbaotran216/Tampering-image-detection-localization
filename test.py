@@ -6,7 +6,7 @@ import random
 import numpy as np
 import torch
 from torch.utils.data import DataLoader
-
+from dataio.dataloaders import build_dataloaders
 from config.config import Config
 from eval_utils import evaluate
 
@@ -178,7 +178,7 @@ def main():
     dilate_k = int(_get(cfg, "dilate_k", 9))
 
     if args.dataset == "casia":
-        from datasets.dataloaders import build_dataloaders
+        
 
         _, _, test_c1_loader, test_c2_loader = build_dataloaders(cfg)
 

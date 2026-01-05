@@ -4,9 +4,9 @@ import torch
 from torch.utils.data import DataLoader, ConcatDataset, Subset
 
 from config.config import Config
-from datasets.casia import Casia2DetLocDataset, Casia1DetDataset
-from datasets.coverage import CoverageDetLocDataset, coverage_base_id_from_path
-from datasets.columbia import ColumbiaDetLocDataset
+from dataio.casia import Casia2DetLocDataset, Casia1DetDataset
+from dataio.coverage import CoverageDetLocDataset, coverage_base_id_from_path
+from dataio.columbia import ColumbiaDetLocDataset
 
 
 def set_seed(seed: int):

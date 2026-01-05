@@ -12,7 +12,7 @@ from config.config import Config
 from models.swint2 import SwinT2_SRM_FPN_DetLoc
 from losses import multi_task_loss
 from eval_utils import evaluate
-from datasets.dataloaders import build_dataloaders, set_seed
+from dataio.dataloaders import build_dataloaders, set_seed
 
 
 def parse_args():
