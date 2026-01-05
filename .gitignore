@@ -21,4 +21,4 @@ debug_out/
 *.bmp
 *.gif
 *.npy
-*.csv
+*.csv"*.pdf" 
