@@ -101,28 +101,36 @@ class ColumbiaDetLocDataset(Dataset):
     def _load_mask(self, path: Optional[str], size: Tuple[int, int]) -> Image.Image:
         if path is None:
             h, w = size
-            arr = np.zeros((h, w), dtype=np.uint8)
-            return Image.fromarray(arr, mode="L")
-        return Image.open(path).convert("L")
+            arr = np.zeros((h, w, 3), dtype=np.uint8)
+            return Image.fromarray(arr, mode="RGB")
+        return Image.open(path).convert("RGB")
+
 
     def __getitem__(self, idx: int):
         img_path, mask_path, label, has_mask = self.samples[idx]
 
         img = self._load_image(img_path)
         h, w = img.size[1], img.size[0]
-        mask_img = self._load_mask(mask_path, (h, w))
 
         img_t = self.img_transform(img)
-        mask_t = self.mask_transform(mask_img)
-        mask_t = (mask_t > 0.5).float()
 
-        if label == 1 and has_mask and self.dilate_k > 1:
-            mask_t = _dilate01(mask_t, self.dilate_k)
+        if label == 0 or (not has_mask):
+            mask_t = torch.zeros((1, self.img_size, self.img_size), dtype=torch.float32)
+        else:
+            mask_img = self._load_mask(mask_path, (h, w))
+            m = self.mask_transform(mask_img)
+            r, g, b = m[0], m[1], m[2]
+
+            tp = (g >= (150.0 / 255.0)) & (r <= (80.0 / 255.0)) & (b <= (80.0 / 255.0))
+            mask_t = tp.unsqueeze(0).float()
+
+            if self.dilate_k > 1:
+                mask_t = _dilate01(mask_t, self.dilate_k)
 
         return {
             "image": img_t,
             "mask": mask_t,
             "label": torch.tensor(float(label), dtype=torch.float32),
-            "has_mask": torch.tensor(bool(has_mask), dtype=torch.bool),  
+            "has_mask": torch.tensor(bool(has_mask), dtype=torch.bool),
             "path": img_path,
         }
