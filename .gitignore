@@ -1,0 +1,4 @@
+rielfake/
+__pycache__/
+*.pyc
+*.pth
