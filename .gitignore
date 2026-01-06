@@ -1,12 +1,19 @@
+# --- Phần Python cơ bản ---
 __pycache__/
+*.pyc
 
+# --- Môi trường ảo (Của bạn) ---
+rielfake/
+
+# --- Model & Checkpoints ---
+*.pth
 checkpoints/
-logs/
 
+# --- Logs & Debug ---
+logs/
+debug.*
+
+# --- Dữ liệu (Datasets) ---
 data/
 CASIA1/
 CASIA2/
-
-debug.*
-
-*.pth
