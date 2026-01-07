@@ -24,7 +24,10 @@ on multiple **image forensics datasets**.
 ⚠️ The dataset is **not included** in this repository due to size and license constraints.
 
 ---
-
+## How to train
+```bash
+python train_swint2.py 
+```
 ## How to Run `test.py`
 
 ```bash
